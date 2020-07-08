@@ -16,36 +16,44 @@ public class BookListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
-
-        try {
-            URL bookUrl = ApiUtil.buildUrl("cooking");
+ try {
+            //creat a URL
+            URL bookUrl = ApiUtil.buildURL("cooking");
+            //call the executeMethod
             new BooksQueryTask().execute(bookUrl);
-
-        }
-        catch (Exception e) {
+             }
+        catch (Exception e)
+        {
             Log.d("error", e.getMessage());
         }
     }
-
-    public class BooksQueryTask extends AsyncTask<URL, Void, String> {
-
+    //Create a query AsycTask class
+    public class BooksQueryTask extends AsyncTask<URL, Void, String>
+    {
+        //implement do in background function
         @Override
         protected String doInBackground(URL... urls) {
-            URL searchURL = urls[0];
-            String result = null;
+            //urls are URLs arrays so accessing an an object you have to call the array
+            URL searchUrl = urls[0]; //getting the first URL;
+            //store the result in a string;
+            String result = null; //set to 0 at start
+            //use try catch to get the first element
             try {
-                result = ApiUtil.getJson(searchURL);
+                result = ApiUtil.getJson(searchUrl);
             }
-            catch (IOException e) {
+            catch (IOException e)
+            {
                 Log.e("Error", e.getMessage());
             }
             return result;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            TextView tvResult = (TextView) findViewById(R.id.tv_Response);
-            tvResult.setText(result);
+        protected void onPostExecute(String results) {
+            //find the textView
+            TextView tvResults = findViewById(R.id.tvResponse);
+            //set the textView to the results
+            tvResults.setText(results);
         }
     }
 }
