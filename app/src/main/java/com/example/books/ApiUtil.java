@@ -4,50 +4,70 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpCookie;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import javax.net.ssl.HttpsURLConnection;
-
 public class ApiUtil {
-    private ApiUtil() {}
 
-    public static final String BASE_API_KEY =
-            "https://www.googleapis.com/books/v1/volumes";
+    //create an empty constructor;
+    private ApiUtil(){}
 
-    public static URL buildUrl(String title) {
-        String fullUrl = BASE_API_KEY + "?q=" + title;
+    //create Constant that wont change using final keyword
+    public static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes";
+
+    //create a URL builder function
+    public static URL buildURL(String title){
+        String fullUrlbuilder = BASE_API_URL + "?q=" + title;
         URL url = null;
-        try {
-            url = new URL(fullUrl);
+        try
+        {
+            url = new URL(fullUrlbuilder);
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
         return url;
     }
-
-    public static String getJson(URL url) throws IOException {
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-
-        try {
-            InputStream stream = connection.getInputStream();
-            Scanner scanner = new Scanner(stream);
+    //connect the URL to JSON
+    public static String getJson(URL url) throws IOException
+    {
+        //establish  HTTP connection and open url connection
+        HttpURLConnection connection = (HttpURLConnection)  url.openConnection();
+        try
+        {
+            //create a scanner object and inputStream for conversion and read string files
+            InputStream inputStream = connection.getInputStream();
+            Scanner scanner = new Scanner(inputStream);
+            //read everything using delimeter
             scanner.useDelimiter("\\A");
+
+            //check if the scanner has data by creating a boolean for it.
             boolean hasData = scanner.hasNext();
-            if (hasData) {
+
+            if (hasData)
+            {
                 return scanner.next();
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
-        catch (Exception e) {
-            Log.d("Error", e.toString());
+        catch (Exception e)
+        {
+            Log.d("Error:", e.toString());
             return null;
         }
         finally {
+            //disconnect the connection
             connection.disconnect();
         }
 
+
     }
 }
+
